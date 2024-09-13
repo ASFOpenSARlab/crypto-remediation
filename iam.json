@@ -1,0 +1,45 @@
+## Permission
+
+# AWS Managed: 
+#   SecretsManagerReadWrite 
+
+# Customer Inline:
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeInstances",
+                "ec2:CreateSnapshot",
+                "ec2:DescribeSnapshots",
+                "ec2:TerminateInstances",
+                "ec2:DescribeVolumes",
+                "ec2:CreateTags"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ses:SendEmail",
+                "ses:SendRawEmail"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+## Trusted Relationships
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "lambda.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
