@@ -7,8 +7,8 @@ import time
 import datetime
 import traceback
 import logging
-logging.setLevel(logging.INFO)
 log = logging.getLogger()
+log.setLevel(logging.INFO)
 
 import boto3
 from botocore.exceptions import ClientError
