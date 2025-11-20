@@ -30,6 +30,20 @@
     ]
 }
 
+## Inline policy to allow assume role
+## Name: allows-cross-account-assume-role
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "AllowCrossAccountAssumeRole",
+			"Effect": "Allow",
+			"Action": "sts:AssumeRole",
+			"Resource": "arn:aws:iam::701288258305:role/Cross-Account-Lambda-To-Cognito"
+		}
+	]
+}
+
 ## Trusted Relationships
 {
     "Version": "2012-10-17",
@@ -38,6 +52,13 @@
             "Effect": "Allow",
             "Principal": {
                 "Service": "lambda.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::381492216607:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_Project-Admin_cbfbdf74ac8274dc"
             },
             "Action": "sts:AssumeRole"
         }
