@@ -21,6 +21,11 @@ SECRETS_MANAGER = boto3.client("secretsmanager", region_name="us-west-2")
 TOKEN_KEY_ARN = 'Secrets Manager ARN of the SSO token secret'
 PORTAL_ENDPOINT = 'https://opensciencelab.asf.alaska.edu/portal/hub/deauthorize'  # Portal endpoint to deauthorize user 
 
+ROLE_ARN = "arn:aws:iam::701288258305:role/Cross-Account-Lambda-To-Cognito"
+ROLE_SESSION_NAME = "CrossAccountAccess"
+
+User_Pool_Id = "us-west-2_YA8Vab9o7"
+
 OSL_ADDR = 'OSL Admin email address' 
 SMCE_ADDR = 'SMCE Admin email address'
 
@@ -29,6 +34,34 @@ DST_ERROR_ADDR = [OSL_ADDR, SMCE_ADDR]
 DST_CRYPTO_ADDR = [OSL_ADDR, SMCE_ADDR]
 
 DRY_RUN = False
+
+
+def disable_user_in_cognito(username: str) -> None:
+    # Assume Role
+    sts_client = boto3.client("sts")
+    response = sts_client.assume_role(
+        RoleArn=ROLE_ARN,
+        RoleSessionName=ROLE_SESSION_NAME,
+    )
+
+    credentials = response['Credentials']
+    access_key_id = credentials['AccessKeyId']
+    secret_access_key = credentials['SecretAccessKey']
+    session_token = credentials['SessionToken']
+
+    assumed_role_session = boto3.Session(
+        aws_access_key_id=access_key_id,
+        aws_secret_access_key=secret_access_key,
+        aws_session_token=session_token,
+    )
+
+    cognito_client = assumed_role_session.client('cognito-idp')
+
+    # Lock User
+    cognito_client.admin_disable_user(
+        UserPoolId=User_Pool_Id,
+        Username="bbuechle",
+    )
 
 
 def disable_user_in_portal(claim_name: str) -> None:
